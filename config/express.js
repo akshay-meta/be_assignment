@@ -79,7 +79,6 @@ module.exports = function(app, passport) {
     })
   );
   app.use(bodyParser.json());
-  app.use(bodyParser.raw());
   app.use(
     methodOverride(function(req) {
       if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -112,20 +111,5 @@ module.exports = function(app, passport) {
   // should be declared after session and flash
   app.use(helpers(pkg.name));
 
-  // adds CSRF support
-  // if (process.env.NODE_ENV !== 'test') {
-  //   app.use(csrf());
-
-  //   // This could be moved to view-helpers :-)
-  //   app.use(function(req, res, next) {
-  //     res.locals.csrf_token = req.csrfToken();
-  //     next();
-  //   });
-  // }
-
-  // Add CORS Configuration
-  // app.use(cors({
-  //   origin: '*'
-  // }))
   app.use(cors())
 };
