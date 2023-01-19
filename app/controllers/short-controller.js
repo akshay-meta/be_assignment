@@ -10,7 +10,7 @@ short.saveShortUrI = async function saveShortUrI(req, res) {
 
     if (!isValidUrl(req.body.fullUrl))
       return res.status(404).send("Invalid URI");
-
+    
     let record = new Short(req.body);
     let savedRecord = await record.save();
 

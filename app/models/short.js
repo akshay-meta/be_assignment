@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const shortId = require("shortid");
-const moment = require('moment');
 
 const shortUrlSchema = new mongoose.Schema({
   fullUrl: {
@@ -10,6 +9,7 @@ const shortUrlSchema = new mongoose.Schema({
   short: {
     type: String,
     required: true,
+    unique: true,
     default: shortId.generate,
   },
   createdAt: {

@@ -11,7 +11,11 @@ const shortController = require('../app/controllers/short-controller');
 router.get('/', (req, res) => { res.send({ status: 'Server Started Successfully', message: 'Welcome To Shorten Url Service' }) });
 
 // Tiny Url Project Routes
+
+// URL shortener endpoint
 router.post('/short', shortController.saveShortUrI);
+
+// Shortener redirect endpoint
 router.get('/:shortId', shortController.getUriByShortId);
 
 module.exports = router;
