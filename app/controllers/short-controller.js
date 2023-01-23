@@ -30,7 +30,6 @@ short.saveShortUrI = async function saveShortUrI(req, res) {
       shortUrl: `${req.headers.origin}/${savedRecord.short}`,
     });
   } catch (error) {
-    console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 };

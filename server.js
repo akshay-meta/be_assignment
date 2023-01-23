@@ -6,6 +6,9 @@
 
 require("dotenv").config();
 
+const cluster = require("cluster");
+const os = require("os");
+
 const fs = require("fs");
 const join = require("path").join;
 const express = require("express");
@@ -43,8 +46,23 @@ connection
 
 function listen() {
   if (app.get("env") === "test") return;
-  app.listen(port);
-  console.log("Express app started on port " + port);
+
+  if (cluster.isMaster) {
+    console.log(`Primary ${process.pid} is running`);
+    const numCPUs = os.cpus();
+
+    // Fork workers.
+    for (let i = 0; i < numCPUs.length; i++) {
+      cluster.fork();
+    }
+
+    cluster.on("exit", (worker, code, signal) => {
+      console.log(`worker ${worker.process.pid} died`);
+    });
+  } else {
+    app.listen(port);
+    console.log("Express app started on port " + port);
+  }
 }
 
 function connect() {
