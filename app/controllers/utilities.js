@@ -21,8 +21,7 @@ util.ungzipUrl = async function ungzipUrl(baseString) {
 
 util.isValidUrl = async function isValidUrl(url) {
   try {
-    new URL(url);
-    return true;
+    return Boolean(new URL(url));
   } catch (error) {
     return false;
   }

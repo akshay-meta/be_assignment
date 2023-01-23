@@ -10,7 +10,7 @@ short.saveShortUrI = async function saveShortUrI(req, res) {
     if (!req.body.fullUrl)
       return res.status(404).send("Missing Required Fields");
 
-    if (!util.isValidUrl(req.body.fullUrl))
+    if (!await util.isValidUrl(req.body.fullUrl))
       return res.status(404).send("Invalid URI");
 
     // Allocate Unique Short ID
