@@ -1,20 +1,26 @@
 const Short = require("../models/short");
 const shortid = require("shortid");
+const util = require('./utilities');
 const short = module.exports;
 
 // Save Short URI
 short.saveShortUrI = async function saveShortUrI(req, res) {
   try {
+
     if (!req.body.fullUrl)
       return res.status(404).send("Missing Required Fields");
 
-    if (!isValidUrl(req.body.fullUrl))
+    if (!util.isValidUrl(req.body.fullUrl))
       return res.status(404).send("Invalid URI");
 
+    // Allocate Unique Short ID
     shortid.worker(1);
     let getShortId = shortid.generate();
     req.body.short = getShortId,
-    req.body.shortUrl = `${req.headers.origin}/${getShortId}`
+    req.body.shortUrl = `${req.headers.origin}/${getShortId}`;
+
+    // Gzip Long URL
+    req.body.fullUrl = await util.gzipUrl(req.body.fullUrl);
 
     let record = new Short(req.body);
     let savedRecord = await record.save();
@@ -24,6 +30,7 @@ short.saveShortUrI = async function saveShortUrI(req, res) {
       shortUrl: `${req.headers.origin}/${savedRecord.short}`,
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).send("Internal Server Error");
   }
 };
@@ -42,17 +49,8 @@ short.getUriByShortId = async function getUriByShortId(req, res) {
     if (!record)
       return res.status(500).send("URL not exist for the given Short ID");
 
-    return res.redirect(302, record.fullUrl);
+    return res.redirect(302, await util.ungzipUrl(record.fullUrl));
   } catch (error) {
     return res.status(500).send("Internal Server Error");
   }
 };
-
-function isValidUrl(string) {
-  try {
-    new URL(string);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
